@@ -1,50 +1,59 @@
-import { useState } from 'react'
-import logo from './logo.svg'
-import './App.css'
+import "flowbite";
+
+import NavBar from "./components/NavBar";
+import CardCountries from "./components/CardCountries";
+
+import "./App.css";
+
+import { useState, useEffect, useRef } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [getAllCountries, setGetAllCountries] = useState([]);
+
+  const [querySearch, setQuerySearch] = useState("all");
+
+  const valueSearch = useRef();
+
+  function search(event) {
+    event.preventDefault();
+    setQuerySearch("name/" + valueSearch.current.value);
+  }
+
+  function allCountries() {
+    setQuerySearch("all");
+  }
+
+  useEffect(() => {
+    fetch("https://restcountries.com/v3.1/" + querySearch)
+      .then(response => response.json())
+      .then(data => setGetAllCountries(data))
+      .catch(err => {
+        throw new Error(err);
+      });
+  }, [querySearch]);
 
   return (
-    <div className="App">
+    <div className="container mx-auto  text-center text-base bg-white text-slate-800 dark:text-slate-200 dark:bg-slate-900">
+      <NavBar />
 
-      <h1 className="text-3xl font-bold underline bg-red-500">
-        Hello world!
-      </h1>
+      <button type="submit" onClick={allCountries}>
+        Get all countries
+      </button>
 
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+      <form className="container mx-auto">
+        <input
+          type="text"
+          ref={valueSearch}
+          placeholder="Search a country"
+        ></input>
+        <button type="submit" onClick={search}>
+          Search
+        </button>
+      </form>
+
+      <CardCountries data={getAllCountries} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

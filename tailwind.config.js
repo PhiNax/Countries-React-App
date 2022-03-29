@@ -1,7 +1,17 @@
 module.exports = {
-  content: ["./src/*.{js,jsx,ts,tsx}"],
+  darkMode: "class",
+  content: [
+    "./src/*.{js,jsx}",
+    "./src/components/*.{js,jsx}",
+    "./node_modules/flowbite/**/*.js",
+  ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        display: ["Poppins", "sans-serif"],
+        body: ["Poppins", "sans-serif"],
+      },
+    },
   },
-  plugins: [],
+  plugins: [require("flowbite/plugin")],
 };
